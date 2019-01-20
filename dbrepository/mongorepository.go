@@ -1,7 +1,7 @@
 package dbrepository
 
 import (
-	domain "../domain"
+	domain "https://github.com/pavanyewale/MAD-Assignment-1/domain"
 	mgo "gopkg.in/mgo.v2"
 	bson "gopkg.in/mgo.v2/bson"
 	"encoding/json"

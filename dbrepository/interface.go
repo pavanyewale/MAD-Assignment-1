@@ -1,6 +1,6 @@
 package dbrepository
 
-import "../domain"
+import "https://github.com/pavanyewale/MAD-Assignment-1/domain"
 //Import import from file to db
 type Import interface{
 	Import(filename string) (int,error)
