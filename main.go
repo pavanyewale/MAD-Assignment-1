@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	domain "github.com/pavanyewale/MAD-Assignment-1/domain"
-	dbrepo "github.com/pavanyewale/MAD-Assignment-1/dbrepository"
-	mongoutils "github.com/pavanyewale/MAD-Assignment-1/utils"
+	domain "./domain"
+	dbrepo "./dbrepository"
+	mongoutils "./utils"
 )
 
 func main() {

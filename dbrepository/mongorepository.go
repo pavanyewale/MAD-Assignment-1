@@ -1,7 +1,7 @@
 package dbrepository
 
 import (
-	domain "https://github.com/pavanyewale/MAD-Assignment-1/domain"
+	domain "../domain"
 	mgo "gopkg.in/mgo.v2"
 	bson "gopkg.in/mgo.v2/bson"
 	"encoding/json"
@@ -58,7 +58,7 @@ func (r *MongoRepository) Store(b *domain.Restaurant) (domain.ID, error) {
 	}
 	return b.DBID, nil
 }
-
+//Import a restaurant record from a file to the db it returns noofrecords gets inserted into db and error if any 
 func (r *MongoRepository) Import(filename string) (int,error){
 	file,err:=os.Open(filename)
 	if err!=nil{
@@ -83,7 +83,7 @@ func (r *MongoRepository) Import(filename string) (int,error){
 	return recordcount,nil
 }
 
-
+//get all records from restaurant
 func (r *MongoRepository) GetAll() ([]domain.Restaurant, error){
 	result := []domain.Restaurant{}
 	session := r.mongoSession.Clone()
@@ -99,7 +99,7 @@ func (r *MongoRepository) GetAll() ([]domain.Restaurant, error){
 		return nil, err
 	}
 }
-
+//Find all records by name
 func (r *MongoRepository) FindByName(name string) ([]domain.Restaurant, error){
 	result := []domain.Restaurant{}
 	session := r.mongoSession.Clone()
@@ -116,7 +116,7 @@ func (r *MongoRepository) FindByName(name string) ([]domain.Restaurant, error){
 	}
 }
 
-
+//delete record by id
 func (r *MongoRepository) Delete(id domain.ID)  error {
 	session := r.mongoSession.Clone()
 	defer session.Close()
@@ -132,6 +132,7 @@ func (r *MongoRepository) Delete(id domain.ID)  error {
 	}
 }
 
+//find all records by type of food
 func (r *MongoRepository) FindByTypeOfFood(foodType string) ([]domain.Restaurant, error){
 	result := []domain.Restaurant{}
 	session := r.mongoSession.Clone()
@@ -148,6 +149,7 @@ func (r *MongoRepository) FindByTypeOfFood(foodType string) ([]domain.Restaurant
 	}
 }
 
+//find all records by postcode
 func (r *MongoRepository) FindByTypeOfPostCode(postCode string) ([]domain.Restaurant, error){
 	result := []domain.Restaurant{}
 	session := r.mongoSession.Clone()

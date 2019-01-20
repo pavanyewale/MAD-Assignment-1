@@ -8,7 +8,11 @@ https://github.com/ozlerhakan/mongodb-json-files/blob/master/datasets/restaurant
 
 1. Write a script - python/golang to import the documents separated by newline into a mongo collection named "restaurant"
 
+=> for this I have created a new interface Import where import(fname string ) (int ,error) method is declared  which returns how many records inserted during importion and error if any error occured during import
+
 2. Write an implementation of the given interface which reads/writes data & write a main file which demonstrates this.
+
+=>interface 
 
 3. Write a command line interface which accepts command line arguments into the terminal which retreives data in golang(extra credit).
 
