@@ -84,8 +84,8 @@ func (r *MongoRepository) Import(filename string) (int,error){
 }
 
 //get all records from restaurant
-func (r *MongoRepository) GetAll() ([]domain.Restaurant, error){
-	result := []domain.Restaurant{}
+func (r *MongoRepository) GetAll() ([]*domain.Restaurant, error){
+	result := []*domain.Restaurant{}
 	session := r.mongoSession.Clone()
 	defer session.Close()
 	coll := session.DB(r.db).C(collectionName)
@@ -100,12 +100,12 @@ func (r *MongoRepository) GetAll() ([]domain.Restaurant, error){
 	}
 }
 //Find all records by name
-func (r *MongoRepository) FindByName(name string) ([]domain.Restaurant, error){
-	result := []domain.Restaurant{}
+func (r *MongoRepository) FindByName(name string) ([]*domain.Restaurant, error){
+	result := []*domain.Restaurant{}
 	session := r.mongoSession.Clone()
 	defer session.Close()
 	coll := session.DB(r.db).C(collectionName)
-	err := coll.Find(bson.M{"name":name}).All(&result)
+	err := coll.Find(bson.M{"name":bson.RegEx{name,"i"}}).All(&result)
 	switch err {
 	case nil:
 		return result, nil
@@ -133,8 +133,8 @@ func (r *MongoRepository) Delete(id domain.ID)  error {
 }
 
 //find all records by type of food
-func (r *MongoRepository) FindByTypeOfFood(foodType string) ([]domain.Restaurant, error){
-	result := []domain.Restaurant{}
+func (r *MongoRepository) FindByTypeOfFood(foodType string) ([]*domain.Restaurant, error){
+	result := []*domain.Restaurant{}
 	session := r.mongoSession.Clone()
 	defer session.Close()
 	coll := session.DB(r.db).C(collectionName)
@@ -150,12 +150,28 @@ func (r *MongoRepository) FindByTypeOfFood(foodType string) ([]domain.Restaurant
 }
 
 //find all records by postcode
-func (r *MongoRepository) FindByTypeOfPostCode(postCode string) ([]domain.Restaurant, error){
-	result := []domain.Restaurant{}
+func (r *MongoRepository) FindByTypeOfPostCode(postCode string) ([]*domain.Restaurant, error){
+	result := []*domain.Restaurant{}
 	session := r.mongoSession.Clone()
 	defer session.Close()
 	coll := session.DB(r.db).C(collectionName)
 	err := coll.Find(bson.M{"postcode":postCode}).All(&result)
+	switch err {
+	case nil:
+		return result, nil
+	case mgo.ErrNotFound:
+		return nil, domain.ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
+func (r *MongoRepository) Search(query string) ([]*domain.Restaurant, error){
+	result := []*domain.Restaurant{}
+	session := r.mongoSession.Clone()
+	defer session.Close()
+	coll := session.DB(r.db).C(collectionName)
+	err := coll.Find(bson.M{"$or":[]bson.M{bson.M{"name":bson.RegEx{query,"i"}},bson.M{"address":bson.RegEx{query,"i"}},bson.M{"address":bson.RegEx{query,"i"}},bson.M{"addressLine2":bson.RegEx{query,"i"}},bson.M{"outcode":bson.RegEx{query,"i"}},bson.M{"postcode":bson.RegEx{query,"i"}},bson.M{"type_of_food":bson.RegEx{query,"i"}}}}).All(&result)
 	switch err {
 	case nil:
 		return result, nil
