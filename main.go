@@ -19,11 +19,6 @@ func main() {
 	var input string
 	var result []*domain.Restaurant 
 	var err error
-	result,err=repoaccess.Search("Aurs Drive")
-		for _,res:=range result {
-			fmt.Println(res)
-		}
-
 	if len(os.Args)>1{
 		input=os.Args[1]
 		arr:=strings.Split(input,"=")
