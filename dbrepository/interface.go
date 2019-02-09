@@ -1,14 +1,18 @@
 package dbrepository
 
-import "../domain"
+import domain "pavan/MAD-Assignment-1/domain"
+
+//import "../domain"
+
 //Import import from file to db
-type Import interface{
-	Import(filename string) (int,error)
+type Import interface {
+	Import(filename string) (int, error)
 }
+
 //Reader read from db
 type Reader interface {
 	Get(id domain.ID) (*domain.Restaurant, error)
-	GetAll() ([]*domain.Restaurant, error) 
+	GetAll() ([]*domain.Restaurant, error)
 	//Regex Substring Match on the name field
 	FindByName(name string) ([]*domain.Restaurant, error)
 }
@@ -34,4 +38,5 @@ type Repository interface {
 	Reader
 	Writer
 	Filter
+	Import
 }
