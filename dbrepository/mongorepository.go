@@ -168,7 +168,13 @@ func (r *MongoRepository) FindByTypeOfPostCode(postCode string) ([]*domain.Resta
 		return nil, err
 	}
 }
-
+func (r *MongoRepository) Update(b *domain.Restaurant) error {
+	session := r.mongoSession.Clone()
+	defer session.Close()
+	coll := session.DB(r.db).C(collectionName)
+	err := coll.Update(bson.M{"_id": b.DBID}, bson.M{"$set": bson.M{"name": b.Name, "address": b.Address, "addressLine2": b.AddressLine2, "url": b.URL, "opcode": b.Outcode, "postcode": b.Postcode, "rating": b.Rating, "type_of_food": b.TypeOfFood}})
+	return err
+}
 func (r *MongoRepository) Search(query string) ([]*domain.Restaurant, error) {
 	result := []*domain.Restaurant{}
 	session := r.mongoSession.Clone()

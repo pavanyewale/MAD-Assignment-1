@@ -2,6 +2,7 @@ package httphandlers
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	mthdroutr "pavan/MAD-Assignment-1/restapplication/packages/mthdrouter"
 	"pavan/MAD-Assignment-1/restapplication/packages/resputl"
@@ -13,6 +14,7 @@ type PingHandler struct {
 }
 
 func (p *PingHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	log.Print("serveHTTP")
 	response := mthdroutr.RouteAPICall(p, r)
 	response.RenderResponse(w)
 }
@@ -24,6 +26,5 @@ func (p *PingHandler) Get(r *http.Request) resputl.SrvcRes {
 	if ok {
 		fmt.Println(key[0])
 	}
-	return resputl.ResponseNotImplemented(nil)
 	return resputl.Response200OK("OK")
 }
