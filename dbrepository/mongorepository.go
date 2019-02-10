@@ -3,6 +3,7 @@ package dbrepository
 import (
 	"bufio"
 	"encoding/json"
+	logger "log"
 	"os"
 	domain "pavan/MAD-Assignment-1/domain"
 
@@ -46,11 +47,11 @@ func (r *MongoRepository) Get(id domain.ID) (*domain.Restaurant, error) {
 //Store a Restaurantrecord
 func (r *MongoRepository) Store(b *domain.Restaurant) (domain.ID, error) {
 	session := r.mongoSession.Clone()
+	logger.Print("mongorepo.store()")
 	defer session.Close()
 	coll := session.DB(r.db).C(collectionName)
-	if domain.ID(0) == b.DBID {
-		b.DBID = domain.NewID()
-	}
+	b.DBID = domain.NewID()
+	logger.Print("id", b.DBID)
 
 	_, err := coll.UpsertId(b.DBID, b)
 

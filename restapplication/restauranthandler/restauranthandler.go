@@ -31,6 +31,51 @@ func (p *RestaurantHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (p *RestaurantHandler) Get(r *http.Request) resputl.SrvcRes {
+	if len(r.URL.Query()) > 0 {
+		queryParams, ok := r.URL.Query()["typeOfFood"]
+		logger.Print(queryParams)
+		if ok {
+			if queryParams[0] != "" {
+				resp, err := p.mongoSession.FindByTypeOfFood(queryParams[0])
+				if err != nil {
+					return resputl.ResponseCustomError(err)
+				}
+				res := TransObjListToResponse(resp)
+				return resputl.Response200OK(res)
+			} else {
+				return resputl.SimpleBadRequest("Invalid Input Data")
+			}
+		}
+		queryParams, ok = r.URL.Query()["name"]
+		logger.Print(queryParams)
+		if ok {
+			if queryParams[0] != "" {
+				resp, err := p.mongoSession.FindByName(queryParams[0])
+				if err != nil {
+					return resputl.ResponseCustomError(err)
+				}
+				res := TransObjListToResponse(resp)
+				return resputl.Response200OK(res)
+			} else {
+				return resputl.SimpleBadRequest("Invalid Input Data")
+			}
+		}
+		queryParams, ok = r.URL.Query()["searchTerm"]
+		logger.Print(queryParams)
+		if ok {
+			if queryParams[0] != "" {
+				resp, err := p.mongoSession.Search(queryParams[0])
+				if err != nil {
+					return resputl.ResponseCustomError(err)
+				}
+				res := TransObjListToResponse(resp)
+				return resputl.Response200OK(res)
+			} else {
+				return resputl.SimpleBadRequest("Invalid Input Data")
+			}
+		}
+		return resputl.SimpleBadRequest("Invalid Input Data")
+	}
 	pathparams := mux.Vars(r)
 	rsID := pathparams["id"]
 	if rsID == "" {
@@ -52,6 +97,7 @@ func (p *RestaurantHandler) Get(r *http.Request) resputl.SrvcRes {
 func (p *RestaurantHandler) Post(r *http.Request) resputl.SrvcRes {
 	//logger.Printf("UserCrudHandler.post")
 	body, err := ioutil.ReadAll(r.Body)
+	logger.Print("rest.POst()")
 	if err != nil {
 		resputl.ResponseCustomError(err)
 	}
@@ -72,11 +118,12 @@ func (p *RestaurantHandler) Post(r *http.Request) resputl.SrvcRes {
 
 	//userObj := f.NewUser(requestdata.FirstName, requestdata.LastName, requestdata.Age)
 	id, err := p.mongoSession.Store(restObj)
+	logger.Print(id)
 	if err != nil {
 		//logger.Fatalf("Error while creating in DB: %v", err)
 		return resputl.ProcessError(customerrors.UnprocessableEntityError("Error in writing to DB"), "")
 	}
-	return resputl.Response200OK(RestaurantCreateRespDTO{ID: string(id)})
+	return resputl.Response200OK(RestaurantCreateRespDTO{ID: id.String()})
 }
 
 func (p *RestaurantHandler) Delete(r *http.Request) resputl.SrvcRes {

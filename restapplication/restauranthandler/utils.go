@@ -8,7 +8,7 @@ func TransObjListToResponse(rests []*domain.Restaurant) RestaurantGetListRespDTO
 	resp := RestaurantGetListRespDTO{}
 	for _, obj := range rests {
 		restObj := RestaurantGetRespDTO{
-			ID:           string(obj.DBID),
+			ID:           obj.DBID.String(),
 			Name:         obj.Name,
 			Address:      obj.Address,
 			AddressLine2: obj.AddressLine2,
